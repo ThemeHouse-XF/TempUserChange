@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThemeHouse_TempUserChange" title="[⌂] Temporary User Changes" version_string="1.0.1" version_id="1447261019" url="http://xf.themehouse.io/" install_callback_class="ThemeHouse_Install" install_callback_method="install" uninstall_callback_class="ThemeHouse_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="ThemeHouse_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThemeHouse_TempUserChange_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThemeHouse_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_TempUserChange_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_User" description="XenForo_Model_User (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_TempUserChange_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_TempUserChange_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_UserChangeTemp" description="XenForo_Model_UserChangeTemp (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThemeHouse_TempUserChange_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="ThemeHouse_TempUserChange_Listener_LoadClass" callback_method="loadClassModel" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups/>
+  <permissions>
+    <permission_groups/>
+    <permissions>
+      <permission permission_group_id="general" permission_id="editTempUserChange" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="20001"/>
+      <permission permission_group_id="general" permission_id="viewTempUserChange" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="20000"/>
+    </permissions>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="permission_general_editTempUserChange" version_id="1403856565" version_string="1.0.0"><![CDATA[Edit temporary user change details]]></phrase>
+    <phrase title="permission_general_viewTempUserChange" version_id="1403856565" version_string="1.0.0"><![CDATA[View temporary user change details]]></phrase>
+    <phrase title="th_add_to_user_groups_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[Add to User Groups]]></phrase>
+    <phrase title="th_created_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[Created]]></phrase>
+    <phrase title="th_requested_temp_user_change_not_found_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[The requested temporary user change could not be found.]]></phrase>
+    <phrase title="th_temporary_changes_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[Temporary Changes]]></phrase>
+    <phrase title="th_temp_change_for_x_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[Temporary Change for {name}]]></phrase>
+    <phrase title="th_this_member_has_no_temp_changes_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[This member has no temporary changes.]]></phrase>
+    <phrase title="th_update_temporary_change_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[Update Temporary Change]]></phrase>
+    <phrase title="th_user_who_received_this_temp_user_change_no_longer_exists_tempuserchange" version_id="1403856565" version_string="1.0.0"><![CDATA[The user who received this temporary user change no longer exists.]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="public">
+      <prefix original_prefix="temp-user-changes" class="ThemeHouse_TempUserChange_Route_Prefix_TempUserChanges" build_link="data_only"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates>
+    <template title="th_member_temp_changes_tempuserchange" version_id="1403862526" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase warnings}: {$user.username}</xen:title>
+<xen:h1>{xen:phrase warnings}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link full:members, $user}">{$user.username}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="member_view.css" />
+
+<div class="userChangeTempList">
+<table class="dataTable" style="table-layout: fixed">
+<tr class="dataRow">
+	<th class="userChangeTempName" width="50%">{xen:phrase field_name}</th>
+	<th class="userChangeTempOldValue">{xen:phrase old_value}</th>
+	<th class="userChangeTempNewValue">{xen:phrase new_value}</th>
+	<th class="userChangeTempExpiry">{xen:phrase expiry}</th>
+	<th class="userChangeTempView">&nbsp;</th>
+</tr>
+<xen:foreach loop="$tempUserChanges" value="$tempUserChange">
+	<tr class="dataRow">
+		<td class="userChangeTempName">{$tempUserChange.name}</td>
+		<td class="userChangeTempOldValue">{$tempUserChange.old_value}</td>
+		<td class="userChangeTempNewValue">{$tempUserChange.new_value}</td>
+		<td class="userChangeTempExpiry"><xen:if is="{$tempUserChange.expiry_date}"><xen:datetime time="{$tempUserChange.expiry_date}" /><xen:else />{xen:phrase never}</xen:if></td>
+		<td class="userChangeTempView dataOptions"><a href="{xen:link temp-user-changes, $tempUserChange}" class="OverlayTrigger secondaryContent">{xen:phrase view}</a></td>
+	</tr>
+</xen:foreach>
+</table>
+</div>]]></template>
+    <template title="th_temp_user_change_info_tempuserchange" version_id="1403862526" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase th_temp_change_for_x_tempuserchange, 'name={$user.username}'}</xen:title>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link members, $user}">{$user.username}</xen:breadcrumb>
+</xen:navigation>
+
+<div class="xenForm formOverlay overlayScroll">
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase field_name}:</dt>
+		<dd>{$change.name}</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase th_created_tempuserchange}:</dt>
+		<dd><xen:datetime time="{$change.create_date}" /></dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase old_value}:</dt>
+		<dd>{$change.old_value}</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase new_value}:</dt>
+		<dd>{$change.new_value}</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase expiry}:</dt>
+		<dd>{xen:if $change.expiry_date, {xen:phrase expires_x, 'date={xen:date $change.expiry_date}'}, {xen:phrase never}}</dd>
+	</dl>
+
+	<div>
+		<xen:if is="{$canEditTempUserChange}">
+			<form action="{xen:link temp-user-changes/expire, $change}" method="post">
+				<dl class="ctrlUnit">
+					<dt></dt>
+					<dd><ul>
+						<li><label><input type="radio" name="expire" value="now" checked="checked" /> {xen:phrase expire_now}</label></li>
+						<li><label><input type="radio" name="expire" value="future" id="ExpireUserChangeTempFuture_{$change.user_change_temp_id}" class="Disabler" /> {xen:phrase expire_in_time}:</label>
+							<ul id="ExpireUserChangeTempFuture_{$change.user_change_temp_id}_Disabler">
+								<li>
+									<input type="text" size="5" name="expiry_length" value="1" class="textCtrl autoSize" />
+									<select name="expiry_unit" class="textCtrl autoSize">
+										<option value="hours">{xen:phrase hours}</option>
+										<option value="days" selected="selected">{xen:phrase days}</option>
+										<option value="weeks">{xen:phrase weeks}</option>
+										<option value="months">{xen:phrase months}</option>
+									</select>
+								</li>
+							</ul>
+						</li>
+					</ul></dd>
+				</dl>
+				<dl class="ctrlUnit submitUnit">
+					<dt></dt>
+					<dd>
+						<input type="submit" value="{xen:phrase th_update_temporary_change_tempuserchange}" class="button primary" />
+					</dd>
+				</dl>
+
+				<input type="hidden" name="_xfConfirm" value="1" />
+				<input type="hidden" name="redirect" value="{$redirect}" />
+				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+			</form>
+		</xen:if>
+	</div>
+</div>]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="footer" modification_key="th_copyrightNotice_tempUserChange" description="Copyright notice for [⌂] Temporary User Changes" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="member_view" modification_key="th_memberView_tempUserChange" description="Adds 'Temporary Changes' tab." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:hook name="member_view_tabs_heading".*>.*)(<xen:hook name="member_view_tabs_content".*>)#Us]]></find>
+      <replace><![CDATA[<xen:if is="{$tempUserChangeCount}"><li><a href="{$requestPaths.requestUri}#tempUserChanges">{xen:phrase th_temporary_changes_tempuserchange} ({xen:number $tempUserChangeCount})</a></li></xen:if>
+${1}
+<xen:if is="{$tempUserChangeCount}">
+	<li id="warnings" class="profileContent" data-loadUrl="{xen:link members/temp-user-changes, $user}">
+		{xen:phrase loading}...
+		<noscript><a href="{xen:link members/temp-user-changes, $user}">{xen:phrase view}</a></noscript>
+	</li>
+</xen:if>
+${2}]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
